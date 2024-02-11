@@ -49,8 +49,11 @@ function App() {
 const StyledApp = styled.div`
   height: 100%;
   width: 100%;
+  justify-content: center;
+  align-items: center;
   display: flex;
   flex-direction: column;
+  background-color: black;
 `;
 
 ['#2AA4BF', '#BFF29B', '#F2E963', '#F2F0D8', '#F28749'];
