@@ -251,6 +251,8 @@ export default function StartScreen({}: StartScreenProps) {
 
 const StyledStartScreen = styled.div`
   height: 100%;
+  width: 100%;
+  background-color: aliceblue;
   position: relative;
   display: flex;
   align-items: center;

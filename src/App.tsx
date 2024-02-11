@@ -6,6 +6,7 @@ import GameContainerWrapper from './Components/GameContainerWrapper';
 import LoginComponent from './Components/LoginComponent';
 import { useSelector } from 'react-redux';
 import { RootState } from './store';
+import ericPic from './assets/eric.jpg';
 
 export enum FetchType {
   CachedHouse = 1,
@@ -31,16 +32,18 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <StyledApp>
-        <BrowserRouter>
-          {loggedIn ? (
-            <Routes>
-              <Route path="/" element={<StartScreen onStart={() => {}} />} />
-              <Route path="/game/*" element={<GameContainerWrapper />} />
-            </Routes>
-          ) : (
-            <LoginComponent />
-          )}
-        </BrowserRouter>
+        <div style={{ maxWidth: '1080px', width: '100%', height: '100%' }}>
+          <BrowserRouter>
+            {loggedIn ? (
+              <Routes>
+                <Route path="/" element={<StartScreen onStart={() => {}} />} />
+                <Route path="/game/*" element={<GameContainerWrapper />} />
+              </Routes>
+            ) : (
+              <LoginComponent />
+            )}
+          </BrowserRouter>
+        </div>
       </StyledApp>
     </ThemeProvider>
   );
@@ -53,7 +56,8 @@ const StyledApp = styled.div`
   align-items: center;
   display: flex;
   flex-direction: column;
-  background-color: black;
+  background: url(${ericPic});
+  background-size: 20%;
 `;
 
 ['#2AA4BF', '#BFF29B', '#F2E963', '#F2F0D8', '#F28749'];

@@ -166,7 +166,6 @@ const StyledGameContainer = styled('div')`
   width: 100%;
   height: 100%;
   background-color: aliceblue;
-  max-width: 1080px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
