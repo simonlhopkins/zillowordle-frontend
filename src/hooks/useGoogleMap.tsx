@@ -78,7 +78,8 @@ const useGoogleMap = ({
               featureType: 'poi',
               stylers: [{ visibility: 'off' }]
             }
-          ]
+          ],
+          gestureHandling: 'greedy'
         });
 
         robotMarker.current = new google.maps.Marker();

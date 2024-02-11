@@ -8,7 +8,7 @@ export function FetchZillowHouse(
 ) {
   switch (fetchType) {
     case FetchType.CachedHouse:
-      if (import.meta.env.VITE_API_URL_PROD) {
+      if (import.meta.env.PROD) {
         return FetchRandomZillowHouse();
       } else {
         return FetchCachedZillowHouse();
