@@ -1,12 +1,9 @@
-import { GameDataType } from '../slices/GameSlice.js';
-import afHouseImg from './American_Football_House_(corrected).jpg';
+import { GameDataType } from '../../../slices/GameSlice.js';
 
-const AmericanFootball: GameDataType = {
+export default {
   zillowHouseData: {
-    latitude: 40.109887327220385,
-    longitude: -88.21573585393224,
     images: [
-      afHouseImg,
+      'https://photos.zillowstatic.com/fp/703ae26825c8a06da8d0a28b4b98580f-cc_ft_1536.jpg',
       'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/American_Football_House_%28corrected%29.jpg/1200px-American_Football_House_%28corrected%29.jpg',
       'https://yeahnogreat.files.wordpress.com/2020/03/img_9125.jpg?w=1024',
       'https://pbs.twimg.com/media/Fuz51miWcAIiCmy.jpg:large',
@@ -15,17 +12,27 @@ const AmericanFootball: GameDataType = {
       'https://pbs.twimg.com/media/ESruB7DXgAAv7Q2.jpg',
       'https://cdn.vox-cdn.com/thumbor/XsRHcPuoEw3iJprDkCK4ll1bf9Q=/0x0:1315x603/1000x1429/filters:focal(803x256:804x257)/cdn.vox-cdn.com/uploads/chorus_asset/file/19896651/New_Project__1_.png'
     ],
-    streetAddress: '704 W High St, Urbana, IL 61801',
     city: 'Urbana',
+    price: 200000,
+    bedrooms: 3,
+    bathrooms: 2,
+    yearBuilt: 1893,
+    streetAddress: '704 W High St',
+    scores: {
+      walkScore: 82,
+      transitScore: 60,
+      bikeScore: 79
+    },
+    zestimate: 208500,
+    rentZestimate: 1420,
+    daysOnZillow: 290,
+    livingArea: 1280,
     state: 'IL',
-    zillowHouseUrl: 'poop',
-    price: 'Priceless'
+    zillowHouseUrl:
+      'https://www.zillow.com/homedetails/704-W-High-St-Urbana-IL-61801/89056214_zpid/',
+    latitude: 40.110046,
+    longitude: -88.21656
   },
-  aIGuess: {
-    lat: 44.76359965427818,
-    lng: -85.61633786698953
-  },
+  aIGuess: null,
   classifiedImages: null
-};
-
-export default AmericanFootball;
+} as GameDataType;

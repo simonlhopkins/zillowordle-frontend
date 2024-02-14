@@ -1,29 +1,42 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { InferType, array, number, object, string } from 'yup';
 import { FetchType } from '../App';
 import { FetchZillowHouse } from '../FetchZillowHouse';
-import { InferType, array, number, object, string } from 'yup';
-import { CityData } from '../types';
-import AFGameData from '../assets/americanFootball';
 import { GetDistanceBetweenCoords } from '../Util';
+import { CityData } from '../types';
+
+const zillowHouseDataSchema = object()
+  .required('Zillow house is required')
+  .shape({
+    latitude: number().required(),
+    longitude: number().required(),
+    images: array().required().of(string().required().url()),
+    streetAddress: string().required(),
+    city: string().required(),
+    state: string().required(),
+    zillowHouseUrl: string().url().required(),
+    price: number().required(),
+    bedrooms: number(),
+    bathrooms: number(),
+    yearBuilt: number(),
+    livingArea: number().nullable(),
+    lotSize: string(),
+    scores: object()
+      .shape({
+        walkScore: number().nullable(),
+        bikeScore: number().nullable(),
+        transitScore: number().nullable()
+      })
+      .optional()
+  });
 
 export const gameDataSchema = object({
-  zillowHouseData: object()
-    .required('Zillow house is required')
-    .shape({
-      latitude: number().required(),
-      longitude: number().required(),
-      images: array().required().of(string().required().url()),
-      streetAddress: string().required(),
-      city: string().required(),
-      state: string().required(),
-      zillowHouseUrl: string().url().required(),
-      price: string().required()
-    }),
+  zillowHouseData: zillowHouseDataSchema,
   aIGuess: object()
     .nullable()
     .shape({
-      lat: number().required('Latitude is required'),
-      lng: number().required('Longitude is required')
+      lat: number().required('ai guess Latitude is required'),
+      lng: number().required('ai guess Longitude is required')
     }),
   classifiedImages: array()
     .nullable()
@@ -38,11 +51,13 @@ export const gameDataSchema = object({
     )
 });
 
-type EndGameData = {
-  distance: number;
+export type EndGameData = {
+  playerDistance: number;
+  AIDistance: number | null;
 };
 
 export type GameDataType = InferType<typeof gameDataSchema>;
+export type ZillowHouseDataType = InferType<typeof zillowHouseDataSchema>;
 
 interface GameState {
   gameData: GameDataType | null;
@@ -117,13 +132,22 @@ const GameSlice = createSlice({
     gameFinished: (state) => {
       state.isSolved = true;
       state.endGameData = {
-        distance: GetDistanceBetweenCoords(
+        playerDistance: GetDistanceBetweenCoords(
           state.userMarker as google.maps.LatLngLiteral,
           {
             lat: state.gameData!.zillowHouseData.latitude,
             lng: state.gameData!.zillowHouseData.longitude
           }
-        )
+        ),
+        AIDistance: state.gameData?.aIGuess
+          ? GetDistanceBetweenCoords(
+              state.gameData?.aIGuess as google.maps.LatLngLiteral,
+              {
+                lat: state.gameData!.zillowHouseData.latitude,
+                lng: state.gameData!.zillowHouseData.longitude
+              }
+            )
+          : null
       };
     },
     gameTypeChanged: (state, { payload }: PayloadAction<GameType>) => {
@@ -138,12 +162,13 @@ const GameSlice = createSlice({
     ) => {
       state.userMarker = payload;
     },
-    AFGame: (state) => {
+    ManuallySetGameData: (state, { payload }: PayloadAction<GameDataType>) => {
       state.status = 'succeeded';
-      state.gameData = AFGameData;
+      state.gameData = payload;
       state.gameType = GameType.Location;
       state.isSolved = false;
       state.userMarker = null;
+      state.endGameData = null;
     }
   },
   extraReducers(builder) {
@@ -152,6 +177,7 @@ const GameSlice = createSlice({
         state.status = 'loading';
         state.error = null;
         state.gameData = null;
+        state.endGameData = null;
       })
       .addCase(
         newGame.fulfilled,
@@ -173,18 +199,17 @@ const GameSlice = createSlice({
       )
       .addCase(newGame.rejected, (state, action) => {
         state.status = 'failed';
-
         state.error = action.payload as string;
       });
   }
 });
 
 export const {
-  AFGame,
   gameFinished,
   gameTypeChanged,
   resetState,
-  onMapClicked
+  onMapClicked,
+  ManuallySetGameData
 } = GameSlice.actions;
 
 export default GameSlice.reducer;

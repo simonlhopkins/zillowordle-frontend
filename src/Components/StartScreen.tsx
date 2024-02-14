@@ -12,20 +12,21 @@ import {
 } from '@mui/material';
 
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { FetchType, GameType } from '../App';
-import { useNavigate } from 'react-router-dom';
-import { CityData } from '../types';
+import axiosInstance from '../AxiosInstance';
 import { AddFartShitty } from '../Util';
-import { useDispatch, useSelector } from 'react-redux';
+import charmer from '../assets/EmoHouseData/HolyGhostModernBaseball/charmer';
 import {
-  AFGame,
+  ManuallySetGameData,
   gameTypeChanged,
   newGame,
   resetState
 } from '../slices/GameSlice';
 import { AppThunkDispatch, RootState } from '../store';
-import axiosInstance from '../AxiosInstance';
+import { CityData } from '../types';
 
 type StartScreenProps = {
   onStart: () => void;
@@ -33,7 +34,7 @@ type StartScreenProps = {
 
 export default function StartScreen({}: StartScreenProps) {
   const navigate = useNavigate();
-  const [fetchType, setFetchType] = useState(FetchType.CachedHouse);
+  const [fetchType, setFetchType] = useState(FetchType.NewHouse);
   const [cityData, setCityData] = useState<CityData[]>();
   const [searchCityData, setSearchCityData] = useState<CityData | null>(null);
   const [useSetLocation, setUseSetLocation] = useState<boolean>(false);
@@ -57,7 +58,7 @@ export default function StartScreen({}: StartScreenProps) {
         {reduxError}
       </Alert>
 
-      <Typography variant="h1">Zillowordle</Typography>
+      <Typography variant="h1">Zilldle</Typography>
       <Button
         size="large"
         variant="contained"
@@ -82,7 +83,7 @@ export default function StartScreen({}: StartScreenProps) {
         size="large"
         variant="contained"
         onClick={async () => {
-          dispatch(AFGame());
+          dispatch(ManuallySetGameData(charmer));
           navigate('/game');
         }}
       >

@@ -28,3 +28,24 @@ export function GetDistanceBetweenCoords(
 ) {
   return google.maps.geometry.spherical.computeDistanceBetween(from, to) / 1000;
 }
+
+export function formatNumberWithCommas(numberToFormat: number): string {
+  // Use Intl.NumberFormat to format the number with commas
+  return new Intl.NumberFormat().format(numberToFormat);
+}
+
+//chat poopoopee
+export function formatNumberToTwoDecimals(number: number): string {
+  // Check if the number is valid
+  if (isNaN(number)) {
+    return 'Invalid number';
+  }
+
+  // Round the number to two decimal places
+  const roundedNumber = Math.round(number * 100) / 100;
+
+  // Convert the rounded number to a string
+  const formattedNumber = roundedNumber.toFixed(2);
+
+  return formattedNumber;
+}

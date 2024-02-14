@@ -1,40 +1,79 @@
-import { useSelector } from 'react-redux';
-import { RootState } from '../store';
-import { Navigate } from 'react-router-dom';
-import { GameDataType } from '../slices/GameSlice';
-import useGoogleMap from '../hooks/useGoogleMap';
-import { styled } from '@mui/material';
-type EndGameComponentProps = { gameData: GameDataType };
-export default function EndGameComponent({ gameData }: EndGameComponentProps) {
-  const isSolved = useSelector((state: RootState) => state.game.isSolved);
-  const { mapDivRef } = useGoogleMap({
-    houseMarkerPos: {
-      lat: gameData.zillowHouseData.latitude,
-      lng: gameData.zillowHouseData.longitude
-    }
-  });
+import styled from 'styled-components';
+import { formatNumberToTwoDecimals } from '../Util';
+import { EndGameData, ZillowHouseDataType } from '../slices/GameSlice';
 
-  if (!isSolved) {
-    return <Navigate to={'/'}></Navigate>;
+type EndGameComponentProps = {
+  endGameData: EndGameData;
+  zillowHouseData: ZillowHouseDataType;
+};
+export default function EndGameComponent({
+  endGameData,
+  zillowHouseData
+}: EndGameComponentProps) {
+  let feedback;
+  if (endGameData.playerDistance < 200) {
+    feedback = 'Great Job 🥳';
+  } else if (endGameData.playerDistance < 500) {
+    feedback = 'Nice Try 👏';
+  } else {
+    feedback = 'Woof 🐶';
+  }
+
+  const AIWon =
+    endGameData.AIDistance &&
+    endGameData.playerDistance >= endGameData.AIDistance;
+  let playerTextClass = '';
+  let AITextClass = '';
+  if (endGameData.AIDistance) {
+    playerTextClass = AIWon ? 'AILoser' : 'AIWinner';
+    AITextClass = AIWon ? 'AIWinner' : 'AILoser';
   }
   return (
     <StyledEndGameComponent>
-      <div
-        ref={mapDivRef}
-        style={{
-          width: '400px',
-          height: '400px'
-        }}
-      ></div>
+      <h1>{feedback}!</h1>
+      <h2>
+        You were{' '}
+        <span className={playerTextClass}>
+          {formatNumberToTwoDecimals(endGameData.playerDistance)} km{' '}
+        </span>
+        away!
+      </h2>
+      {endGameData.AIDistance && (
+        <>
+          <h2>
+            the AI was{' '}
+            <span className={AITextClass}>
+              {formatNumberToTwoDecimals(endGameData.AIDistance)} km{' '}
+            </span>
+            away!
+          </h2>
+          {!AIWon ? <h2>You beat the AI</h2> : <h2>the AI beat you!!</h2>}
+        </>
+      )}
+
+      <h2>{zillowHouseData.streetAddress}</h2>
+      <h2>
+        {zillowHouseData.city}, {zillowHouseData.state}
+      </h2>
+      <a href={zillowHouseData.zillowHouseUrl}>
+        <h2>🔗 Zillow</h2>
+      </a>
+
+      {/* <GoogleMapComponent /> */}
     </StyledEndGameComponent>
   );
 }
 
-const StyledEndGameComponent = styled('div')`
-  display: flex;
-  width: 100%;
-  height: 100%;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+const StyledEndGameComponent = styled.div`
+  /* width: 100%; */
+  max-width: 50%;
+  padding: 10px;
+  white-space: nowrap;
+  overflow: scroll;
+  .AILoser {
+    color: red;
+  }
+  .AIWinner {
+    color: green;
+  }
 `;

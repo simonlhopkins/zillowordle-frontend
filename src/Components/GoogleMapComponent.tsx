@@ -1,8 +1,11 @@
 import { Loader } from '@googlemaps/js-api-loader';
-import { RefObject, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store';
+import styled from 'styled-components';
 import { onMapClicked } from '../slices/GameSlice';
+import { RootState } from '../store';
+
+type GoogleMapComponentProps = {};
 const center: google.maps.LatLngLiteral = { lat: 37.0902, lng: -95.7129 };
 function getLatLngFromMarker(
   marker: google.maps.Marker
@@ -10,20 +13,7 @@ function getLatLngFromMarker(
   return { lat: marker.getPosition()!.lat(), lng: marker.getPosition()!.lng() };
 }
 
-interface GoogleMapHook {
-  fitBoundsToMarkers: () => void;
-  mapDivRef: RefObject<HTMLDivElement>;
-  hasPlacedMarker: boolean;
-  // Add more functions as needed
-}
-
-type GoogleMapHookProps = {
-  houseMarkerPos: google.maps.LatLngLiteral;
-};
-
-const useGoogleMap = ({
-  houseMarkerPos
-}: GoogleMapHookProps): GoogleMapHook => {
+const GoogleMapComponent = memo(({}: GoogleMapComponentProps) => {
   const map = useRef<google.maps.Map | null>(null);
   const userMarker = useRef<google.maps.Marker | null>(null);
   const houseMarker = useRef<google.maps.Marker | null>(null);
@@ -38,6 +28,11 @@ const useGoogleMap = ({
   const robotMarkerPos = useSelector(
     (state: RootState) => state.game.gameData?.aIGuess
   );
+  const gameData = useSelector((state: RootState) => state.game.gameData);
+  const houseMarkerPos = {
+    lat: gameData?.zillowHouseData.latitude as number,
+    lng: gameData?.zillowHouseData.longitude as number
+  };
   const [mapInitialized, setMapInitialized] = useState<boolean>(false);
   const isSolved = useSelector((state: RootState) => state.game.isSolved);
 
@@ -122,6 +117,8 @@ const useGoogleMap = ({
 
   const hasPlacedMarker = userMarkerPos != undefined;
   const fitBoundsToMarkers = () => {
+    console.log('fit map to bounds');
+
     if (!userMarkerPos)
       return console.error('Trying to fit markers before userMarker is set');
     const bounds = new google.maps.LatLngBounds(houseMarkerPos).extend(
@@ -133,7 +130,6 @@ const useGoogleMap = ({
         map.current!.fitBounds(bounds);
       }
     }, 2000);
-
     map.current!.fitBounds(bounds);
   };
   if (mapInitialized) {
@@ -165,6 +161,7 @@ const useGoogleMap = ({
       houseMarker.current!.setMap(null);
       robotMarker.current!.setMap(null);
     }
+    if (isSolved) fitBoundsToMarkers();
   }
 
   const resetMapZoom = () => {
@@ -173,12 +170,11 @@ const useGoogleMap = ({
     _map.setZoom(3.5);
     _map.setCenter(center);
   };
+  return <StyledMapDiv ref={mapDivRef}></StyledMapDiv>;
+});
 
-  return {
-    fitBoundsToMarkers,
-    mapDivRef,
-    hasPlacedMarker
-  };
-};
-
-export default useGoogleMap;
+const StyledMapDiv = styled.div`
+  min-height: 80%;
+  flex: 1;
+`;
+export default GoogleMapComponent;

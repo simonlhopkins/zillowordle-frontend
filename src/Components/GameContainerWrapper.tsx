@@ -5,7 +5,6 @@ import { RootState } from '../store';
 import { GameDataType } from '../slices/GameSlice';
 import styled from 'styled-components';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import EndGameComponent from './EndGameComponent';
 
 export default function GameContainerWrapper() {
   const gameData = useSelector((state: RootState) => state.game.gameData);
@@ -25,10 +24,6 @@ export default function GameContainerWrapper() {
           <Route
             path="/"
             element={<GameContainer gameData={gameData as GameDataType} />}
-          />
-          <Route
-            path="/endGame"
-            element={<EndGameComponent gameData={gameData as GameDataType} />}
           />
         </Routes>
       );

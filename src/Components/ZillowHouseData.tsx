@@ -1,60 +1,105 @@
-import { List, ListItemText } from '@mui/material';
 import styled from 'styled-components';
+import { formatNumberWithCommas } from '../Util';
+import { ZillowHouseDataType } from '../slices/GameSlice';
+import ChecklistComponent from './ChecklistComponent';
 
 type ZillowHouseDataProps = {
-  data: any;
+  gameData: ZillowHouseDataType;
 };
 
-export function ZillowHouseData({ data }: ZillowHouseDataProps) {
-  console.log('render');
+export function ZillowHouseData({ gameData }: ZillowHouseDataProps) {
+  const checklist: string[] = [
+    'live laugh love',
+    'truck',
+    'palm tree',
+    'jacuzzi',
+    'family picture',
+    'millennial flooring',
+    'stuffed animals',
+    'floor plan',
+    'body of water',
+    'snow',
+    'wood burning fireplace',
+    'evergreen tree',
+    'blue chair',
+    'towel over window',
+    'ohio',
+    'fake furniture',
+    'cat',
+    'man cave',
+    'Dolls',
+    'clock',
+    'Bricks',
+    'Holiday decorations',
+    'public park',
+    'live animal'
+  ];
   return (
     <StyledZillowHouseData>
-      <div className="statsContainer">
-        <List>
-          {/* <ListItemText>{`city: ${data.city}`}</ListItemText> */}
-          <ListItemText>{`price: ${data.price}`}</ListItemText>
-          <ListItemText>{`bedrooms: ${data.bedrooms}`}</ListItemText>
-          <ListItemText>{`bathrooms: ${data.bathrooms}`}</ListItemText>
-          <ListItemText>{`yearBuilt: ${data.yearBuilt}`}</ListItemText>
-          {/* <ListItemText>{`streetAddress: ${data.streetAddress}`}</ListItemText> */}
-          <ListItemText>{`walk score: ${data.scores.walkScore}`}</ListItemText>
-          <ListItemText>{`bike score: ${data.scores.bikeScore}`}</ListItemText>
-          <ListItemText>{`transit score: ${data.scores.transitScore}`}</ListItemText>
-          <ListItemText>{`zestimate: ${data.zestimate}`}</ListItemText>
-          <ListItemText>{`rentZestimate: ${data.rentZestimate}`}</ListItemText>
-          <ListItemText>{`daysOnZillow: ${data.daysOnZillow}`}</ListItemText>
-          <ListItemText>{`livingArea: ${data.livingArea}sq ft`}</ListItemText>
-          <ListItemText>
-            {`zillowHouseUrl: `}
-            <a href={data.zillowHouseUrl}>here</a>
-          </ListItemText>
-        </List>
-      </div>
+      <table>
+        <tbody>
+          <tr>
+            <td>Price</td>
+            <td>${formatNumberWithCommas(gameData.price)}</td>
+          </tr>
+          <tr>
+            <td>bedrooms</td>
+            <td>{gameData.bedrooms || 'N/A'}</td>
+          </tr>
+          <tr>
+            <td>bathrooms</td>
+            <td>{gameData.bathrooms}</td>
+          </tr>
+          <tr>
+            <td>year built</td>
+            <td>{gameData.yearBuilt}</td>
+          </tr>
+          <tr>
+            <td>living area</td>
+            <td>{gameData.livingArea} sq ft</td>
+          </tr>
+          <tr>
+            <td>lot size</td>
+            <td>{gameData.lotSize} sq ft</td>
+          </tr>
 
-      <div className="imgContainer">
-        {data.images.map((url: string, i: number) => (
-          <img key={i} src={url}></img>
-        ))}
-      </div>
+          {gameData.scores && (
+            <>
+              <tr>
+                <td colSpan={2}>Scores</td>
+              </tr>
+              <tr>
+                <td>walk score</td>
+                <td>{gameData.scores.walkScore}</td>
+              </tr>
+              <tr>
+                <td>bike score</td>
+                <td>{gameData.scores.bikeScore}</td>
+              </tr>
+              <tr>
+                <td>transit score</td>
+                <td>{gameData.scores.transitScore}</td>
+              </tr>
+            </>
+          )}
+        </tbody>
+      </table>
+      <ChecklistComponent checklist={checklist} />
     </StyledZillowHouseData>
   );
 }
 
 const StyledZillowHouseData = styled.div`
-  height: 90%;
-  display: flex;
-  flex-direction: column;
-  > div {
-    flex: 1;
-    overflow: scroll;
-  }
-  .imgContainer {
-    flex: 2;
-    img {
-      max-width: 100%;
-      border: 5px solid black;
-      align-self: center;
-      box-sizing: border-box;
-    }
+  padding: 20px;
+  font-size: 1.3rem;
+  color: white;
+  overflow: scroll;
+  table,
+  td {
+    border: 1px solid white;
+    border-collapse: collapse;
+    border-spacing: 0;
+    padding: 5px;
+    white-space: nowrap;
   }
 `;
