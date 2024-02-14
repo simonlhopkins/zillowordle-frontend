@@ -2,7 +2,8 @@ import { Loader } from '@googlemaps/js-api-loader';
 import { memo, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { onMapClicked } from '../slices/GameSlice';
+import { calculateNewCoordinates } from '../Util';
+import { userMarkerMoved } from '../slices/GameSlice';
 import { RootState } from '../store';
 
 type GoogleMapComponentProps = {};
@@ -18,6 +19,7 @@ const GoogleMapComponent = memo(({}: GoogleMapComponentProps) => {
   const userMarker = useRef<google.maps.Marker | null>(null);
   const houseMarker = useRef<google.maps.Marker | null>(null);
   const robotMarker = useRef<google.maps.Marker | null>(null);
+  const hintCircle = useRef<google.maps.Circle | null>(null);
   const polyLine = useRef<google.maps.Polyline | null>(null);
   const blockMarker = useRef<boolean>(false);
   const initialized = useRef<boolean>(false);
@@ -29,6 +31,7 @@ const GoogleMapComponent = memo(({}: GoogleMapComponentProps) => {
     (state: RootState) => state.game.gameData?.aIGuess
   );
   const gameData = useSelector((state: RootState) => state.game.gameData);
+  const hintVisible = useSelector((state: RootState) => state.game.hintVisible);
   const houseMarkerPos = {
     lat: gameData?.zillowHouseData.latitude as number,
     lng: gameData?.zillowHouseData.longitude as number
@@ -86,6 +89,23 @@ const GoogleMapComponent = memo(({}: GoogleMapComponentProps) => {
         houseMarker.current = newHouseMarker;
         const newUserMarker = new google.maps.Marker();
         newUserMarker.setLabel('🤔');
+
+        hintCircle.current = new google.maps.Circle();
+        const radius = 1000000;
+        const offsetCoord = calculateNewCoordinates(houseMarkerPos, {
+          latitudeOffsetMeters:
+            Math.random() * radius * 0.5 * (Math.random() > 0.5 ? -1 : 1),
+          longitudeOffsetMeters:
+            Math.random() * radius * 0.5 * (Math.random() > 0.5 ? -1 : 1)
+        });
+        hintCircle.current.setCenter(offsetCoord);
+        hintCircle.current.setMap(newMap);
+        hintCircle.current.setRadius(radius);
+        hintCircle.current.set;
+        hintCircle.current.setOptions({
+          fillColor: 'transparent',
+          clickable: false
+        });
         //todo, if a value exists in localstorage for a placed user marker, then use that.
         if (userMarkerPos) {
           newUserMarker.setMap(newMap);
@@ -104,7 +124,10 @@ const GoogleMapComponent = memo(({}: GoogleMapComponentProps) => {
         google.maps.event.addListener(newMap, 'click', (event: any) => {
           if (blockMarker.current) return;
           dispatch(
-            onMapClicked({ lat: event.latLng.lat(), lng: event.latLng.lng() })
+            userMarkerMoved({
+              lat: event.latLng.lat(),
+              lng: event.latLng.lng()
+            })
           );
         });
         if (isSolved) fitBoundsToMarkers();
@@ -115,7 +138,6 @@ const GoogleMapComponent = memo(({}: GoogleMapComponentProps) => {
     initializeMap();
   }, []);
 
-  const hasPlacedMarker = userMarkerPos != undefined;
   const fitBoundsToMarkers = () => {
     console.log('fit map to bounds');
 
@@ -143,9 +165,7 @@ const GoogleMapComponent = memo(({}: GoogleMapComponentProps) => {
       // robotMarker.current!.setMap(map.current);
       robotMarker.current!.setPosition(robotMarkerPos);
     }
-    if (robotMarkerPos) {
-    } else {
-    }
+    hintCircle.current!.setVisible(hintVisible);
     houseMarker.current!.setPosition(houseMarkerPos);
     blockMarker.current = isSolved;
     if (isSolved) {

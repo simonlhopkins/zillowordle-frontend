@@ -31,7 +31,7 @@ export default function SwipableImageContainer({
           }}
         /> */}
             <TransformWrapper centerOnInit initialScale={1} disabled={!locked}>
-              {({ resetTransform }) => (
+              {({}) => (
                 <>
                   <button
                     onClick={() => {

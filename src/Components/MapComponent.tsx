@@ -24,11 +24,6 @@ type MapComponentProps = {
   gameData: GameDataType;
 };
 
-enum MapWindow {
-  Map,
-  Info
-}
-
 export const MapComponent = ({ onSubmit, gameData }: MapComponentProps) => {
   const [currentMapSize, setCurrentMapSize] = useState<MapSize>(MapSize.SMALL);
   const [expandedMapSize, setExpandedMapSize] = useState<MapSize>(MapSize.MED);

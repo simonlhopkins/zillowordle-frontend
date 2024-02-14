@@ -1,8 +1,8 @@
 import { Loader } from '@googlemaps/js-api-loader';
 import { RefObject, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { userMarkerMoved } from '../slices/GameSlice';
 import { RootState } from '../store';
-import { onMapClicked } from '../slices/GameSlice';
 const center: google.maps.LatLngLiteral = { lat: 37.0902, lng: -95.7129 };
 function getLatLngFromMarker(
   marker: google.maps.Marker
@@ -109,7 +109,10 @@ const useGoogleMap = ({
         google.maps.event.addListener(newMap, 'click', (event: any) => {
           if (blockMarker.current) return;
           dispatch(
-            onMapClicked({ lat: event.latLng.lat(), lng: event.latLng.lng() })
+            userMarkerMoved({
+              lat: event.latLng.lat(),
+              lng: event.latLng.lng()
+            })
           );
         });
         if (isSolved) fitBoundsToMarkers();

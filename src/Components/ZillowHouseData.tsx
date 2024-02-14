@@ -1,6 +1,8 @@
+import { Button } from '@mui/material';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { formatNumberWithCommas } from '../Util';
-import { ZillowHouseDataType } from '../slices/GameSlice';
+import { ZillowHouseDataType, toggleHint } from '../slices/GameSlice';
 import ChecklistComponent from './ChecklistComponent';
 
 type ZillowHouseDataProps = {
@@ -8,6 +10,7 @@ type ZillowHouseDataProps = {
 };
 
 export function ZillowHouseData({ gameData }: ZillowHouseDataProps) {
+  const dispatch = useDispatch();
   const checklist: string[] = [
     'live laugh love',
     'truck',
@@ -84,6 +87,14 @@ export function ZillowHouseData({ gameData }: ZillowHouseDataProps) {
           )}
         </tbody>
       </table>
+      <Button
+        variant="contained"
+        onClick={() => {
+          dispatch(toggleHint());
+        }}
+      >
+        toggle hint
+      </Button>
       <ChecklistComponent checklist={checklist} />
     </StyledZillowHouseData>
   );

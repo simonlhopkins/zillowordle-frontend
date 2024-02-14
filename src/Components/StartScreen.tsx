@@ -77,7 +77,7 @@ export default function StartScreen({}: StartScreenProps) {
           navigate('/game');
         }}
       >
-        {status == 'loading' ? 'Loading' : 'New Game'}
+        {status == 'loading' ? 'Loading' : 'Fetch New House'}
       </Button>
       <Button
         size="large"

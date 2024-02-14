@@ -20,7 +20,7 @@ const zillowHouseDataSchema = object()
     bathrooms: number(),
     yearBuilt: number(),
     livingArea: number().nullable(),
-    lotSize: string(),
+    lotSize: string().nullable(),
     scores: object()
       .shape({
         walkScore: number().nullable(),
@@ -67,6 +67,7 @@ interface GameState {
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
   endGameData: EndGameData | null;
+  hintVisible: boolean;
 }
 export enum GameType {
   Location = 1,
@@ -81,7 +82,8 @@ const initGameData: GameState = {
   isSolved: false,
   status: 'idle',
   error: null,
-  endGameData: null
+  endGameData: null,
+  hintVisible: false
 };
 
 const newGame = createAsyncThunk(
@@ -131,6 +133,7 @@ const GameSlice = createSlice({
   reducers: {
     gameFinished: (state) => {
       state.isSolved = true;
+      state.hintVisible = false;
       state.endGameData = {
         playerDistance: GetDistanceBetweenCoords(
           state.userMarker as google.maps.LatLngLiteral,
@@ -156,11 +159,14 @@ const GameSlice = createSlice({
     resetState: () => {
       return initGameData;
     },
-    onMapClicked: (
+    userMarkerMoved: (
       state,
       { payload }: PayloadAction<google.maps.LatLngLiteral>
     ) => {
       state.userMarker = payload;
+    },
+    toggleHint: (state) => {
+      state.hintVisible = !state.hintVisible;
     },
     ManuallySetGameData: (state, { payload }: PayloadAction<GameDataType>) => {
       state.status = 'succeeded';
@@ -208,8 +214,9 @@ export const {
   gameFinished,
   gameTypeChanged,
   resetState,
-  onMapClicked,
-  ManuallySetGameData
+  userMarkerMoved,
+  ManuallySetGameData,
+  toggleHint
 } = GameSlice.actions;
 
 export default GameSlice.reducer;

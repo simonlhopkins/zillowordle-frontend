@@ -59,6 +59,8 @@ export default function EndGameComponent({
         <h2>🔗 Zillow</h2>
       </a>
 
+      <iframe src={zillowHouseData.zillowHouseUrl} title="zillow"></iframe>
+
       {/* <GoogleMapComponent /> */}
     </StyledEndGameComponent>
   );
@@ -75,5 +77,8 @@ const StyledEndGameComponent = styled.div`
   }
   .AIWinner {
     color: green;
+  }
+  iframe {
+    min-height: 400px;
   }
 `;
