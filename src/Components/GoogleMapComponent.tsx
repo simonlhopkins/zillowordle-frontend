@@ -194,7 +194,7 @@ const GoogleMapComponent = memo(({}: GoogleMapComponentProps) => {
 });
 
 const StyledMapDiv = styled.div`
-  min-height: 80%;
+  min-height: min(400px, 80%);
   flex: 1;
 `;
 export default GoogleMapComponent;
