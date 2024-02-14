@@ -58,10 +58,6 @@ export default function EndGameComponent({
       <a href={zillowHouseData.zillowHouseUrl}>
         <h2>🔗 Zillow</h2>
       </a>
-
-      <iframe src={zillowHouseData.zillowHouseUrl} title="zillow"></iframe>
-
-      {/* <GoogleMapComponent /> */}
     </StyledEndGameComponent>
   );
 }
