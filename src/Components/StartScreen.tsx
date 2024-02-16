@@ -284,6 +284,7 @@ const StyledStartScreen = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  overflow: scroll;
   gap: 1rem;
 `;
 

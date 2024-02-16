@@ -84,7 +84,11 @@ export const MapComponent = ({ onSubmit, gameData }: MapComponentProps) => {
           aria-label="outlined primary button group"
           sx={{
             marginTop: 'auto',
-            alignSelf: 'flex-start'
+            alignSelf: 'flex-start',
+            pointerEvents: 'all'
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
           }}
         >
           <Tooltip
@@ -175,9 +179,7 @@ export const MapComponent = ({ onSubmit, gameData }: MapComponentProps) => {
                 zillowHouseData={gameData.zillowHouseData}
               />
             ) : (
-              <div>
-                <ZillowHouseData gameData={gameData.zillowHouseData} />
-              </div>
+              <ZillowHouseData gameData={gameData.zillowHouseData} />
             )}
           </StyledBodyContents>
         </div>
@@ -218,7 +220,8 @@ export const MapComponent = ({ onSubmit, gameData }: MapComponentProps) => {
             disabled={!hasPlacedMarker}
             variant="contained"
             sx={{
-              width: '100%'
+              width: '100%',
+              pointerEvents: 'all'
             }}
           >
             {hasPlacedMarker ? 'Guess' : 'Place Your Pin on the Map'}
@@ -265,6 +268,7 @@ const StyledBodyContents = styled.div`
   background-color: black;
   color: white;
   overflow: scroll;
+  pointer-events: all;
 `;
 
 const StyledMapContainerDiv = styled.div<{
@@ -273,6 +277,7 @@ const StyledMapContainerDiv = styled.div<{
 }>`
   padding: 10px;
   position: absolute;
+  pointer-events: none;
   min-height: ${(props) =>
     props.$mapHidden ? '0%' : GetHeightFromMapSize(props.$mapSize)};
   min-width: ${(props) =>
@@ -286,7 +291,6 @@ const StyledMapContainerDiv = styled.div<{
   display: flex;
   box-sizing: border-box;
   flex-direction: column;
-  pointer-events: all;
   transition:
     min-height 300ms,
     flex-basis 300ms,

@@ -95,6 +95,9 @@ const StyledZillowHouseData = styled.div`
   font-size: 1.3rem;
   color: white;
   overflow: scroll;
+  @media only screen and (max-width: 768px) {
+    overflow: initial;
+  }
   table,
   td {
     border: 1px solid white;
