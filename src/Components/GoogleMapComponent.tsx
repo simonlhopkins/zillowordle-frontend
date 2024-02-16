@@ -2,7 +2,6 @@ import { Loader } from '@googlemaps/js-api-loader';
 import { memo, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { calculateNewCoordinates } from '../Util';
 import { userMarkerMoved } from '../slices/GameSlice';
 import { RootState } from '../store';
 
@@ -92,14 +91,18 @@ const GoogleMapComponent = memo(({ showHint }: GoogleMapComponentProps) => {
         newUserMarker.setLabel('🤔');
 
         hintCircle.current = new google.maps.Circle();
+
         const radius = 1000000;
-        const offsetCoord = calculateNewCoordinates(houseMarkerPos, {
-          latitudeOffsetMeters:
-            Math.random() * radius * 0.5 * (Math.random() > 0.5 ? -1 : 1),
-          longitudeOffsetMeters:
-            Math.random() * radius * 0.5 * (Math.random() > 0.5 ? -1 : 1)
-        });
-        hintCircle.current.setCenter(offsetCoord);
+        const setHintCircleOffsetPos = () => {
+          const newCenter = google.maps.geometry.spherical.computeOffset(
+            houseMarkerPos,
+            radius * Math.random(),
+            Math.random() * 360
+          );
+          hintCircle.current!.setCenter(newCenter);
+        };
+        setHintCircleOffsetPos();
+
         hintCircle.current.setMap(newMap);
         hintCircle.current.setRadius(radius);
         hintCircle.current.set;

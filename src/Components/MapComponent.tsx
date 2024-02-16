@@ -1,5 +1,6 @@
 import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
+import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -13,7 +14,6 @@ import { AppThunkDispatch, RootState } from '../store';
 import EndGameComponent from './EndGameComponent';
 import GoogleMapComponent from './GoogleMapComponent';
 import { ZillowHouseData } from './ZillowHouseData';
-
 enum MapSize {
   SMALL,
   MED,
@@ -52,7 +52,6 @@ export const MapComponent = ({ onSubmit, gameData }: MapComponentProps) => {
         pointerEvents: currentMapSize === MapSize.LARGE ? 'all' : 'none'
       }}
       onClick={() => {
-        console.log('hell');
         if (currentMapSize == MapSize.LARGE) {
           setCurrentMapSize(MapSize.MED);
           setExpandedMapSize(MapSize.MED);
@@ -91,7 +90,7 @@ export const MapComponent = ({ onSubmit, gameData }: MapComponentProps) => {
           <Tooltip
             title={mapPinned ? 'Unpin Map' : 'Pin Map'}
             placement="top"
-            enterDelay={700}
+            enterDelay={300}
           >
             <Button
               variant="contained"
@@ -111,7 +110,7 @@ export const MapComponent = ({ onSubmit, gameData }: MapComponentProps) => {
           <Tooltip
             title={expandedMapSize == MapSize.LARGE ? 'medium' : 'large'}
             placement="top"
-            enterDelay={700}
+            enterDelay={300}
           >
             <Button
               variant="contained"
@@ -151,6 +150,16 @@ export const MapComponent = ({ onSubmit, gameData }: MapComponentProps) => {
           >
             {mapHidden ? <VisibilityIcon /> : <VisibilityOffIcon />}
           </Button>
+          <Tooltip title={'toggle hint'} placement="top" enterDelay={300}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                setShowHint(!showHint);
+              }}
+            >
+              <PsychologyAltIcon />
+            </Button>
+          </Tooltip>
         </ButtonGroup>
         <div style={{ position: 'relative', flex: '1' }}>
           <StyledBodyContents
@@ -168,14 +177,6 @@ export const MapComponent = ({ onSubmit, gameData }: MapComponentProps) => {
             ) : (
               <div>
                 <ZillowHouseData gameData={gameData.zillowHouseData} />
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    setShowHint(!showHint);
-                  }}
-                >
-                  toggle hint
-                </Button>
               </div>
             )}
           </StyledBodyContents>

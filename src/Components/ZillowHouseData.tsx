@@ -9,7 +9,7 @@ type ZillowHouseDataProps = {
 
 export function ZillowHouseData({ gameData }: ZillowHouseDataProps) {
   const checklist: string[] = [
-    'live laugh love',
+    '"live laugh love" core sign',
     'truck',
     'palm tree',
     'jacuzzi',

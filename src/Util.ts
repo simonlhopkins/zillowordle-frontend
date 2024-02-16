@@ -49,39 +49,3 @@ export function formatNumberToTwoDecimals(number: number): string {
 
   return formattedNumber;
 }
-
-interface Offset {
-  latitudeOffsetMeters: number;
-  longitudeOffsetMeters: number;
-}
-
-export function calculateNewCoordinates(
-  startCoordinates: google.maps.LatLngLiteral,
-  offset: Offset
-): google.maps.LatLngLiteral {
-  // Earth radius in meters
-  const earthRadius = 6371000;
-
-  // Convert latitude and longitude from degrees to radians
-  const lat1 = (Math.PI / 180) * startCoordinates.lat;
-
-  // Calculate new latitude
-  const newLat =
-    (180 / Math.PI) *
-    Math.asin(
-      Math.sin(lat1) * Math.cos(offset.latitudeOffsetMeters / earthRadius) +
-        Math.cos(lat1) *
-          Math.sin(offset.latitudeOffsetMeters / earthRadius) *
-          Math.cos(0)
-    );
-
-  // Calculate new longitude
-  const newLon =
-    startCoordinates.lng +
-    (180 / Math.PI) *
-      (offset.longitudeOffsetMeters /
-        earthRadius /
-        Math.cos((Math.PI / 180) * startCoordinates.lat));
-
-  return { lat: newLat, lng: newLon };
-}
