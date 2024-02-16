@@ -7,13 +7,14 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
-import { createGlobalStyle } from 'styled-components';
 import { Provider } from 'react-redux';
+import { createGlobalStyle } from 'styled-components';
 import store from './store.ts';
 
 const GlobalStyle = createGlobalStyle`
   html, body, #root {
     height: 100%;
+    overflow: hidden;
 	margin: 0;
   	padding: 0;
   }

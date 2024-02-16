@@ -1,12 +1,12 @@
-import styled from 'styled-components';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import StartScreen from './Components/StartScreen';
 import { ThemeProvider, createTheme } from '@mui/material';
+import { useSelector } from 'react-redux';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import styled from 'styled-components';
 import GameContainerWrapper from './Components/GameContainerWrapper';
 import LoginComponent from './Components/LoginComponent';
-import { useSelector } from 'react-redux';
-import { RootState } from './store';
+import StartScreen from './Components/StartScreen';
 import ericPic from './assets/eric.jpg';
+import { RootState } from './store';
 
 export enum FetchType {
   CachedHouse = 1,
@@ -58,6 +58,7 @@ const StyledApp = styled.div`
   flex-direction: column;
   background: url(${ericPic});
   background-size: 20%;
+  overflow: hidden;
 `;
 
 ['#2AA4BF', '#BFF29B', '#F2E963', '#F2F0D8', '#F28749'];
