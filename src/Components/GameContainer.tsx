@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { MapComponent } from './MapComponent';
 
-import { useDispatch } from 'react-redux';
+import Confetti from 'react-confetti';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { GameDataType, gameFinished } from '../slices/GameSlice';
-import { AppThunkDispatch } from '../store';
+import { AppThunkDispatch, RootState } from '../store';
 import FullScreenImage from './FullScreenImage';
 import ImageContainer from './ImageContainer';
 
@@ -14,37 +15,19 @@ export function GameContainer({ gameData }: GameContainerProps) {
   const [imageToExpand, setImageToExpand] = useState<string | null>(null);
 
   const dispatch = useDispatch<AppThunkDispatch>();
+  const isSolved = useSelector((state: RootState) => state.game.isSolved);
 
   const onSubmit = () => {
-    // showSolved();
     dispatch(gameFinished());
-
-    // navigate('/game/endGame');
   };
 
   return (
     <StyledGameContainer>
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          position: 'absolute',
-          padding: '20px',
-          flexDirection: 'column',
-          boxSizing: 'border-box',
-          pointerEvents: 'none'
-        }}
-      >
-        <div
-          style={{
-            width: '100%',
-            height: '100%',
-            position: 'relative'
-          }}
-        >
-          <MapComponent onSubmit={onSubmit} gameData={gameData} />
-        </div>
-      </div>
+      {isSolved && (
+        <Confetti recycle={false} numberOfPieces={500} style={{ zIndex: 4 }} />
+      )}
+
+      <MapComponent onSubmit={onSubmit} gameData={gameData} />
 
       <StyledImageWrapper>
         <ImageContainer

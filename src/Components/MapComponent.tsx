@@ -29,6 +29,7 @@ export const MapComponent = ({ onSubmit, gameData }: MapComponentProps) => {
   const [expandedMapSize, setExpandedMapSize] = useState<MapSize>(MapSize.MED);
   const [mapPinned, setMapPinned] = useState(false);
   const [mapHidden, setMapHidden] = useState(false);
+  const [showHint, setShowHint] = useState(false);
   const [resizeTimeoutID, setResizeTimeoutID] = useState<NodeJS.Timeout | null>(
     null
   );
@@ -39,147 +40,191 @@ export const MapComponent = ({ onSubmit, gameData }: MapComponentProps) => {
     useSelector((state: RootState) => state.game.userMarker) != null;
   const dispatch = useDispatch<AppThunkDispatch>();
   const endGameData = useSelector((state: RootState) => state.game.endGameData);
-
   return (
-    <StyledMapContainerDiv
-      $mapHidden={mapHidden}
-      $mapSize={currentMapSize}
-      onMouseEnter={() => {
-        if (resizeTimeoutID) {
-          clearTimeout(resizeTimeoutID);
-        }
-        if (currentMapSize == MapSize.SMALL) {
-          setCurrentMapSize(expandedMapSize);
-        }
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        flexDirection: 'column',
+        boxSizing: 'border-box',
+        zIndex: 3,
+        pointerEvents: currentMapSize === MapSize.LARGE ? 'all' : 'none'
       }}
-      onMouseLeave={() => {
-        if (!mapPinned) {
-          const newResizeTimeoutId = setTimeout(() => {
-            setCurrentMapSize(MapSize.SMALL);
-          }, resizeTimeoutLength);
-          setResizeTimeoutID(newResizeTimeoutId);
+      onClick={() => {
+        console.log('hell');
+        if (currentMapSize == MapSize.LARGE) {
+          setCurrentMapSize(MapSize.MED);
+          setExpandedMapSize(MapSize.MED);
         }
+
+        // console.log(isFullscreenRef.current);
       }}
     >
-      <ButtonGroup
-        aria-label="outlined primary button group"
-        sx={{
-          marginTop: 'auto'
+      <StyledMapContainerDiv
+        $mapHidden={mapHidden}
+        $mapSize={currentMapSize}
+        onMouseEnter={() => {
+          if (resizeTimeoutID) {
+            clearTimeout(resizeTimeoutID);
+          }
+          if (currentMapSize == MapSize.SMALL) {
+            setCurrentMapSize(expandedMapSize);
+          }
+        }}
+        onMouseLeave={() => {
+          if (!mapPinned) {
+            const newResizeTimeoutId = setTimeout(() => {
+              setCurrentMapSize(MapSize.SMALL);
+            }, resizeTimeoutLength);
+            setResizeTimeoutID(newResizeTimeoutId);
+          }
         }}
       >
-        <Tooltip
-          title={mapPinned ? 'Unpin Map' : 'Pin Map'}
-          placement="top"
-          enterDelay={700}
+        <ButtonGroup
+          aria-label="outlined primary button group"
+          sx={{
+            marginTop: 'auto',
+            alignSelf: 'flex-start'
+          }}
         >
-          <Button
-            variant="contained"
-            onClick={() => {
-              setMapPinned((prev) => !prev);
-            }}
+          <Tooltip
+            title={mapPinned ? 'Unpin Map' : 'Pin Map'}
+            placement="top"
+            enterDelay={700}
           >
-            <PushPinIcon
-              style={{
-                transform: `rotate(${mapPinned ? '0' : '-90'}deg)`,
-                transition: 'transform 300ms'
+            <Button
+              variant="contained"
+              onClick={(e) => {
+                e.stopPropagation();
+                setMapPinned((prev) => !prev);
               }}
-            />
-          </Button>
-        </Tooltip>
-        <Tooltip
-          title={expandedMapSize == MapSize.LARGE ? 'medium' : 'large'}
-          placement="top"
-          enterDelay={700}
-        >
+            >
+              <PushPinIcon
+                style={{
+                  transform: `rotate(${mapPinned ? '0' : '-90'}deg)`,
+                  transition: 'transform 300ms'
+                }}
+              />
+            </Button>
+          </Tooltip>
+          <Tooltip
+            title={expandedMapSize == MapSize.LARGE ? 'medium' : 'large'}
+            placement="top"
+            enterDelay={700}
+          >
+            <Button
+              variant="contained"
+              onClick={(e) => {
+                e.stopPropagation();
+                console.log('button');
+                if (expandedMapSize == MapSize.LARGE) {
+                  setExpandedMapSize(MapSize.MED);
+                  setCurrentMapSize(MapSize.MED);
+                } else if (expandedMapSize == MapSize.MED) {
+                  setExpandedMapSize(MapSize.LARGE);
+                  setCurrentMapSize(MapSize.LARGE);
+                }
+              }}
+            >
+              {expandedMapSize == MapSize.LARGE ? (
+                <CloseFullscreenIcon
+                  style={{
+                    transform: `rotate(90deg)`
+                  }}
+                />
+              ) : (
+                <OpenInFullIcon
+                  style={{
+                    transform: `rotate(90deg)`
+                  }}
+                />
+              )}
+            </Button>
+          </Tooltip>
           <Button
             variant="contained"
-            onClick={() => {
-              if (expandedMapSize == MapSize.LARGE) {
-                setExpandedMapSize(MapSize.MED);
-                setCurrentMapSize(MapSize.MED);
-              } else if (expandedMapSize == MapSize.MED) {
-                setExpandedMapSize(MapSize.LARGE);
-                setCurrentMapSize(MapSize.LARGE);
-              }
+            onClick={(e) => {
+              e.stopPropagation();
+              setMapHidden(!mapHidden);
             }}
           >
-            {expandedMapSize == MapSize.LARGE ? (
-              <CloseFullscreenIcon
-                style={{
-                  transform: `rotate(90deg)`
-                }}
+            {mapHidden ? <VisibilityIcon /> : <VisibilityOffIcon />}
+          </Button>
+        </ButtonGroup>
+        <div style={{ position: 'relative', flex: '1' }}>
+          <StyledBodyContents
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <GoogleMapComponent showHint={showHint} />
+
+            {endGameData ? (
+              <EndGameComponent
+                endGameData={endGameData}
+                zillowHouseData={gameData.zillowHouseData}
               />
             ) : (
-              <OpenInFullIcon
-                style={{
-                  transform: `rotate(90deg)`
-                }}
-              />
+              <div>
+                <ZillowHouseData gameData={gameData.zillowHouseData} />
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    setShowHint(!showHint);
+                  }}
+                >
+                  toggle hint
+                </Button>
+              </div>
             )}
+          </StyledBodyContents>
+        </div>
+        {gameType == GameType.Price && (
+          <Slider
+            aria-label="Temperature"
+            defaultValue={30}
+            color="secondary"
+          />
+        )}
+        {isSolved ? (
+          <Button
+            variant="contained"
+            onClick={() => {
+              dispatch(
+                newGame({
+                  payload: {
+                    fetchType: FetchType.CachedHouse,
+                    cityData: null,
+                    gameType: GameType.Location
+                  },
+                  type: ''
+                })
+              );
+            }}
+          >
+            Play Again
           </Button>
-        </Tooltip>
-        <Button
-          variant="contained"
-          onClick={() => {
-            setMapHidden(!mapHidden);
-          }}
-        >
-          {mapHidden ? <VisibilityIcon /> : <VisibilityOffIcon />}
-        </Button>
-      </ButtonGroup>
-      <div style={{ position: 'relative', flex: '1' }}>
-        <StyledBodyContents>
-          <GoogleMapComponent />
-
-          {endGameData ? (
-            <EndGameComponent
-              endGameData={endGameData}
-              zillowHouseData={gameData.zillowHouseData}
-            />
-          ) : (
-            <ZillowHouseData gameData={gameData.zillowHouseData} />
-          )}
-        </StyledBodyContents>
-      </div>
-      {gameType == GameType.Price && (
-        <Slider aria-label="Temperature" defaultValue={30} color="secondary" />
-      )}
-      {isSolved ? (
-        <Button
-          variant="contained"
-          onClick={() => {
-            dispatch(
-              newGame({
-                payload: {
-                  fetchType: FetchType.CachedHouse,
-                  cityData: null,
-                  gameType: GameType.Location
-                },
-                type: ''
-              })
-            );
-          }}
-        >
-          Play Again
-        </Button>
-      ) : (
-        <Button
-          onClick={() => {
-            onSubmit();
-            setMapPinned(true);
-            setExpandedMapSize(MapSize.LARGE);
-            setCurrentMapSize(MapSize.LARGE);
-          }}
-          disabled={!hasPlacedMarker}
-          variant="contained"
-          sx={{
-            width: '100%'
-          }}
-        >
-          {hasPlacedMarker ? 'Guess' : 'Place Your Pin on the Map'}
-        </Button>
-      )}
-    </StyledMapContainerDiv>
+        ) : (
+          <Button
+            onClick={() => {
+              onSubmit();
+              setMapPinned(true);
+              setExpandedMapSize(MapSize.LARGE);
+              setCurrentMapSize(MapSize.LARGE);
+              setMapHidden(false);
+            }}
+            disabled={!hasPlacedMarker}
+            variant="contained"
+            sx={{
+              width: '100%'
+            }}
+          >
+            {hasPlacedMarker ? 'Guess' : 'Place Your Pin on the Map'}
+          </Button>
+        )}
+      </StyledMapContainerDiv>
+    </div>
   );
 };
 
@@ -225,6 +270,7 @@ const StyledMapContainerDiv = styled.div<{
   $mapSize: MapSize;
   $mapHidden: boolean;
 }>`
+  padding: 10px;
   position: absolute;
   min-height: ${(props) =>
     props.$mapHidden ? '0%' : GetHeightFromMapSize(props.$mapSize)};
@@ -239,7 +285,6 @@ const StyledMapContainerDiv = styled.div<{
   display: flex;
   box-sizing: border-box;
   flex-direction: column;
-  z-index: 3;
   pointer-events: all;
   transition:
     min-height 300ms,

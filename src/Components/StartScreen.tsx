@@ -18,7 +18,7 @@ import styled from 'styled-components';
 import { FetchType, GameType } from '../App';
 import axiosInstance from '../AxiosInstance';
 import { AddFartShitty } from '../Util';
-import charmer from '../assets/EmoHouseData/HolyGhostModernBaseball/charmer';
+import ModernBaseball from '../assets/EmoHouseData/HolyGhostModernBaseball/holyGhost';
 import {
   ManuallySetGameData,
   gameTypeChanged,
@@ -60,6 +60,7 @@ export default function StartScreen({}: StartScreenProps) {
 
       <Typography variant="h1">Zilldle</Typography>
       <Button
+        sx={{ display: import.meta.env.PROD ? 'none' : 'initial' }}
         size="large"
         variant="contained"
         disabled={status == 'loading'}
@@ -79,16 +80,7 @@ export default function StartScreen({}: StartScreenProps) {
       >
         {status == 'loading' ? 'Loading' : 'Fetch New House'}
       </Button>
-      <Button
-        size="large"
-        variant="contained"
-        onClick={async () => {
-          dispatch(ManuallySetGameData(charmer));
-          navigate('/game');
-        }}
-      >
-        Emo
-      </Button>
+
       <Button
         size="large"
         variant="contained"
@@ -127,7 +119,16 @@ export default function StartScreen({}: StartScreenProps) {
       >
         Random
       </Button>
-
+      <Button
+        size="large"
+        variant="contained"
+        onClick={async () => {
+          dispatch(ManuallySetGameData(ModernBaseball));
+          navigate('/game');
+        }}
+      >
+        Emo
+      </Button>
       {zillowData != null && (
         <Button
           size="large"
@@ -160,7 +161,9 @@ export default function StartScreen({}: StartScreenProps) {
             </Button>
           )} */}
       <StyledOptionsContainer>
-        <FormControl>
+        <FormControl
+          sx={{ display: import.meta.env.PROD ? 'none' : 'initial' }}
+        >
           <InputLabel id="fetch-type-label">Fetch Type</InputLabel>
           <Select
             labelId="fetch-type-label"

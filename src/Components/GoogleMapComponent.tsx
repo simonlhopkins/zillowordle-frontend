@@ -6,7 +6,9 @@ import { calculateNewCoordinates } from '../Util';
 import { userMarkerMoved } from '../slices/GameSlice';
 import { RootState } from '../store';
 
-type GoogleMapComponentProps = {};
+type GoogleMapComponentProps = {
+  showHint: boolean;
+};
 const center: google.maps.LatLngLiteral = { lat: 37.0902, lng: -95.7129 };
 function getLatLngFromMarker(
   marker: google.maps.Marker
@@ -14,7 +16,7 @@ function getLatLngFromMarker(
   return { lat: marker.getPosition()!.lat(), lng: marker.getPosition()!.lng() };
 }
 
-const GoogleMapComponent = memo(({}: GoogleMapComponentProps) => {
+const GoogleMapComponent = memo(({ showHint }: GoogleMapComponentProps) => {
   const map = useRef<google.maps.Map | null>(null);
   const userMarker = useRef<google.maps.Marker | null>(null);
   const houseMarker = useRef<google.maps.Marker | null>(null);
@@ -31,7 +33,6 @@ const GoogleMapComponent = memo(({}: GoogleMapComponentProps) => {
     (state: RootState) => state.game.gameData?.aIGuess
   );
   const gameData = useSelector((state: RootState) => state.game.gameData);
-  const hintVisible = useSelector((state: RootState) => state.game.hintVisible);
   const houseMarkerPos = {
     lat: gameData?.zillowHouseData.latitude as number,
     lng: gameData?.zillowHouseData.longitude as number
@@ -165,7 +166,7 @@ const GoogleMapComponent = memo(({}: GoogleMapComponentProps) => {
       // robotMarker.current!.setMap(map.current);
       robotMarker.current!.setPosition(robotMarkerPos);
     }
-    hintCircle.current!.setVisible(hintVisible);
+    hintCircle.current!.setVisible(showHint);
     houseMarker.current!.setPosition(houseMarkerPos);
     blockMarker.current = isSolved;
     if (isSolved) {
@@ -194,7 +195,7 @@ const GoogleMapComponent = memo(({}: GoogleMapComponentProps) => {
 });
 
 const StyledMapDiv = styled.div`
-  min-height: min(300px, 80%);
+  min-height: min(600px, 80%);
   flex: 1;
 `;
 export default GoogleMapComponent;

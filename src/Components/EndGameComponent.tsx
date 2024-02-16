@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { formatNumberToTwoDecimals } from '../Util';
 import { EndGameData, ZillowHouseDataType } from '../slices/GameSlice';
-
 type EndGameComponentProps = {
   endGameData: EndGameData;
   zillowHouseData: ZillowHouseDataType;
