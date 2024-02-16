@@ -49,3 +49,20 @@ export function formatNumberToTwoDecimals(number: number): string {
 
   return formattedNumber;
 }
+//chat poo poo pee
+export function mapRange(
+  value: number,
+  fromMin: number,
+  fromMax: number,
+  toMin: number,
+  toMax: number
+): number {
+  // Ensure the value is within the original range
+  const clampedValue = Math.max(Math.min(value, fromMax), fromMin);
+
+  // Calculate the percentage of the value within the original range
+  const percentage = (clampedValue - fromMin) / (fromMax - fromMin);
+
+  // Map the percentage to the new range and return the result
+  return toMin + percentage * (toMax - toMin);
+}

@@ -7,6 +7,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Slider,
   TextField,
   Typography
 } from '@mui/material';
@@ -18,7 +19,9 @@ import styled from 'styled-components';
 import { FetchType, GameType } from '../App';
 import axiosInstance from '../AxiosInstance';
 import { AddFartShitty } from '../Util';
-import ModernBaseball from '../assets/EmoHouseData/HolyGhostModernBaseball/holyGhost';
+import ModernBaseball from '../assets/EmoHouseData/HolyGhostModernBaseball/ModernBaseball';
+import americanFootball from '../assets/EmoHouseData/HolyGhostModernBaseball/americanFootball';
+import charmer from '../assets/EmoHouseData/HolyGhostModernBaseball/charmer';
 import {
   ManuallySetGameData,
   gameTypeChanged,
@@ -44,7 +47,7 @@ export default function StartScreen({}: StartScreenProps) {
   const reduxError = useSelector((state: RootState) => state.game.error);
   const status = useSelector((state: RootState) => state.game.status);
   const zillowData = useSelector((state: RootState) => state.game.gameData);
-
+  const [emoIndex, setEmoIndex] = useState(0);
   return (
     <StyledStartScreen>
       <Alert
@@ -123,12 +126,31 @@ export default function StartScreen({}: StartScreenProps) {
         size="large"
         variant="contained"
         onClick={async () => {
-          dispatch(ManuallySetGameData(ModernBaseball));
+          const emoOptions = [ModernBaseball, charmer, americanFootball];
+          dispatch(
+            ManuallySetGameData(
+              emoOptions[
+                Math.min(
+                  emoOptions.length - 1,
+                  Math.floor((emoIndex / 100) * emoOptions.length)
+                )
+              ]
+            )
+          );
           navigate('/game');
         }}
       >
         Emo
       </Button>
+      <Slider
+        aria-label="Volume"
+        value={emoIndex}
+        sx={{ maxWidth: '200px' }}
+        onChange={(event, newValue) => {
+          setEmoIndex(newValue as number);
+        }}
+      />
+
       {zillowData != null && (
         <Button
           size="large"
