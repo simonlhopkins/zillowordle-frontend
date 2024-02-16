@@ -74,7 +74,6 @@ const StyledEndGameComponent = styled.div`
   width: fit-content;
   padding: 5px;
   margin: 10px;
-  white-space: nowrap;
   overflow: scroll;
   @media only screen and (max-width: 768px) {
     overflow: initial;

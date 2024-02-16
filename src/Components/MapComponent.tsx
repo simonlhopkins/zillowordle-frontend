@@ -7,6 +7,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { Button, ButtonGroup, Slider, Tooltip } from '@mui/material';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { FetchType, GameType } from '../App';
 import { GameDataType, newGame } from '../slices/GameSlice';
@@ -40,6 +41,8 @@ export const MapComponent = ({ onSubmit, gameData }: MapComponentProps) => {
     useSelector((state: RootState) => state.game.userMarker) != null;
   const dispatch = useDispatch<AppThunkDispatch>();
   const endGameData = useSelector((state: RootState) => state.game.endGameData);
+  const navigate = useNavigate();
+
   return (
     <div
       style={{
@@ -190,43 +193,61 @@ export const MapComponent = ({ onSubmit, gameData }: MapComponentProps) => {
             color="secondary"
           />
         )}
-        {isSolved ? (
-          <Button
-            variant="contained"
-            onClick={() => {
-              dispatch(
-                newGame({
-                  payload: {
-                    fetchType: FetchType.CachedHouse,
-                    cityData: null,
-                    gameType: GameType.Location
-                  },
-                  type: ''
-                })
-              );
-            }}
-          >
-            Play Again
-          </Button>
-        ) : (
-          <Button
-            onClick={() => {
-              onSubmit();
-              setMapPinned(true);
-              setExpandedMapSize(MapSize.LARGE);
-              setCurrentMapSize(MapSize.LARGE);
-              setMapHidden(false);
-            }}
-            disabled={!hasPlacedMarker}
-            variant="contained"
-            sx={{
-              width: '100%',
-              pointerEvents: 'all'
-            }}
-          >
-            {hasPlacedMarker ? 'Guess' : 'Place Your Pin on the Map'}
-          </Button>
-        )}
+        <div style={{ width: '100%', display: 'flex', pointerEvents: 'all' }}>
+          {isSolved ? (
+            <>
+              <Button
+                variant="contained"
+                sx={{
+                  flex: 1
+                }}
+                onClick={() => {
+                  dispatch(
+                    newGame({
+                      payload: {
+                        fetchType: FetchType.Random,
+                        cityData: null,
+                        gameType: gameType
+                      },
+                      type: ''
+                    })
+                  );
+                }}
+              >
+                Play Again
+              </Button>
+              <Button
+                variant="contained"
+                sx={{
+                  flex: 1
+                }}
+                onClick={() => {
+                  navigate('/');
+                }}
+              >
+                Main Menu
+              </Button>
+            </>
+          ) : (
+            <Button
+              onClick={() => {
+                onSubmit();
+                setMapPinned(true);
+                setExpandedMapSize(MapSize.LARGE);
+                setCurrentMapSize(MapSize.LARGE);
+                setMapHidden(false);
+              }}
+              disabled={!hasPlacedMarker}
+              variant="contained"
+              sx={{
+                width: '100%',
+                pointerEvents: 'all'
+              }}
+            >
+              {hasPlacedMarker ? 'Guess' : 'Place Your Pin on the Map'}
+            </Button>
+          )}
+        </div>
       </StyledMapContainerDiv>
     </div>
   );
@@ -267,7 +288,10 @@ const StyledBodyContents = styled.div`
   transition: max-height 300ms;
   background-color: black;
   color: white;
-  overflow: scroll;
+  overflow: initial;
+  @media only screen and (max-width: 768px) {
+    overflow: scroll;
+  }
   pointer-events: all;
 `;
 
