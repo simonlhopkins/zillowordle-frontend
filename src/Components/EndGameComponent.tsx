@@ -29,44 +29,56 @@ export default function EndGameComponent({
   }
   return (
     <StyledEndGameComponent>
-      <h1>{feedback}!</h1>
-      <h2>
-        You were{' '}
-        <span className={playerTextClass}>
-          {formatNumberToTwoDecimals(endGameData.playerDistance)} km{' '}
-        </span>
-        away!
-      </h2>
-      {endGameData.AIDistance && (
-        <>
-          <h2>
-            the AI was{' '}
-            <span className={AITextClass}>
-              {formatNumberToTwoDecimals(endGameData.AIDistance)} km{' '}
-            </span>
-            away!
-          </h2>
-          {!AIWon ? <h2>You beat the AI</h2> : <h2>the AI beat you!!</h2>}
-        </>
-      )}
+      <StyledWrapper>
+        <h1>{feedback}!</h1>
+        <h2>
+          You were{' '}
+          <span className={playerTextClass}>
+            {formatNumberToTwoDecimals(endGameData.playerDistance)} km{' '}
+          </span>
+          away!
+        </h2>
+        {endGameData.AIDistance && (
+          <>
+            <h2>
+              the AI was{' '}
+              <span className={AITextClass}>
+                {formatNumberToTwoDecimals(endGameData.AIDistance)} km{' '}
+              </span>
+              away!
+            </h2>
+            {!AIWon ? <h2>You beat the AI</h2> : <h2>the AI beat you!!</h2>}
+          </>
+        )}
 
-      <h2>{zillowHouseData.streetAddress}</h2>
-      <h2>
-        {zillowHouseData.city}, {zillowHouseData.state}
-      </h2>
-      <a href={zillowHouseData.zillowHouseUrl}>
-        <h2>🔗 Zillow</h2>
-      </a>
+        <h2>{zillowHouseData.streetAddress}</h2>
+        <h2>
+          {zillowHouseData.city}, {zillowHouseData.state}
+        </h2>
+        <a href={zillowHouseData.zillowHouseUrl}>
+          <h2>🔗 Zillow</h2>
+        </a>
+      </StyledWrapper>
     </StyledEndGameComponent>
   );
 }
 
+const StyledWrapper = styled.div`
+  border: 5px white outset;
+  box-shadow: 10px 5px 5px red;
+  padding: 5px;
+`;
+
 const StyledEndGameComponent = styled.div`
   margin: auto;
   width: fit-content;
-  padding: 10px;
+  padding: 5px;
+  margin: 10px;
   white-space: nowrap;
-  border: 5px white outset;
+  overflow: scroll;
+  @media only screen and (max-width: 768px) {
+    overflow: initial;
+  }
   .AILoser {
     color: red;
   }

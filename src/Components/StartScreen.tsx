@@ -146,7 +146,7 @@ export default function StartScreen({}: StartScreenProps) {
         aria-label="Volume"
         value={emoIndex}
         sx={{ maxWidth: '200px' }}
-        onChange={(event, newValue) => {
+        onChange={(_, newValue) => {
           setEmoIndex(newValue as number);
         }}
       />
