@@ -62,14 +62,11 @@ export default function EndGameComponent({
 }
 
 const StyledEndGameComponent = styled.div`
-  /* width: 100%; */
-
+  margin: auto;
   width: fit-content;
   padding: 10px;
   white-space: nowrap;
-  overflow: scroll;
-  overscroll-behavior: contain;
-
+  border: 5px white outset;
   .AILoser {
     color: red;
   }

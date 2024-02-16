@@ -1,6 +1,6 @@
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Fab, FabProps, styled } from '@mui/material';
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 type FullScreenImageProps = {
   url: string;
   onClose: () => void;
